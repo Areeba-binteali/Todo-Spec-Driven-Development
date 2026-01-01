@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/ # Added explicitly
+pip-selfcheck.json
+.tox/
+.nox/
+.eggs/
+*.egg-info/
+*.egg
+dist/
+build/
+MANIFEST
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+.hypothesis/
+# Jupyter Notebook
+.ipynb_checkpoints
+# VSCode
+.vscode/
+# PyCharm
+.idea/
+# Universal
+.DS_Store # Added
+Thumbs.db # Added
+*.tmp # Added
+*.swp # Added
