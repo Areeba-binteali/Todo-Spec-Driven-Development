@@ -1,94 +1,124 @@
 <!--
 Sync Impact Report:
-- Version change: 0.0.0 → 1.0.0
-- Added sections:
-  - Project Purpose
+- Version change: 1.0.0 → 2.0.0
+- Summary: The constitution has been completely rewritten to reflect the project's transition from a simple in-memory CLI app (Phase I) to a full-stack, multi-user web application (Phase II). All principles, standards, and scope definitions have been updated.
+- Removed Sections: All sections from v1.0.0.
+- Added Sections:
+  - Project Purpose (updated)
   - Core Principles
-  - Key Standards
-  - Functional Scope (Phase I only)
-  - Data Constraints
-  - Technical Constraints
-  - Project Structure Requirements
-  - Out of Scope (explicitly excluded)
+  - Architecture Principles
+  - Authentication & Security Rules
+  - API Design Rules
+  - Data & Persistence Rules
+  - Frontend Rules
+  - Spec-Kit Rules
+  - Out of Scope (Explicitly Forbidden)
+  - Quality Standards
+  - Success Criteria
 - Templates requiring updates:
-  - ✅ .specify/templates/plan-template.md
-  - ✅ .specify/templates/spec-template.md
-  - ✅ .specify/templates/tasks-template.md
+  - ⚠️ .specify/templates/plan-template.md (Constitution Check is outdated)
+  - ⚠️ .specify/templates/spec-template.md (Needs sections for API endpoints, auth)
+  - ⚠️ .specify/templates/tasks-template.md (Needs new phases for web development)
+  - ⚠️ README.md (Outdated, needs full rewrite for web app)
+  - ⚠️ specs/001-todo-console-app/quickstart.md (Outdated, needs full rewrite for web app)
 -->
 
-# Phase I – In-Memory Todo Console Application Constitution
+# Phase II – Full-Stack Todo Web Application Constitution
 
 ## Project Purpose
 
-Build a foundational command-line Todo application that demonstrates spec-driven, agentic software development using Claude Code and Spec-Kit Plus. This phase focuses strictly on core CRUD functionality and clean architecture, serving as the base for future evolutionary phases.
+Transform the Phase I in-memory console todo app into a modern, production-style full-stack web application with authentication, persistent storage, and a clean API-first architecture using spec-driven development.
 
 ## Core Principles
 
-### I. Spec-First Development
-No implementation before finalized specifications.
+- **Spec-First Development**: No implementation without an explicit spec.
+- **Zero Manual Coding**: All code must be generated via the agent based on specs.
+- **Separation of Concerns**: Frontend, backend, auth, and database concerns must be clearly separated.
+- **User Isolation & Security**: Every operation must be scoped to the authenticated user.
+- **Deterministic Behavior**: No guessing, hallucination, or inferred behavior beyond the specs.
 
-### II. Agentic Workflow
-All development to follow spec → plan → tasks → implementation via Claude Code.
+## Architecture Principles
 
-### III. No Manual Coding
-All code must be generated through Claude Code.
+- Monorepo structure using Spec-Kit conventions.
+- Frontend (Next.js) and Backend (FastAPI) are independent services.
+- Communication strictly via REST APIs.
+- Authentication handled on frontend, authorization enforced on backend.
+- Database is the single source of truth for tasks.
 
-### IV. Simplicity, Clarity, and Correctness
-Prioritize simplicity, clarity, and correctness over feature richness.
+## Authentication & Security Rules
 
-### V. Clean Code
-Code must be clean, readable, and maintainable Python code.
+- Better Auth is the only authentication provider.
+- JWT-based authentication is mandatory for all API requests.
+- Every backend request must:
+  - Verify JWT signature using shared secret (BETTER_AUTH_SECRET).
+  - Extract authenticated user identity from token.
+  - Enforce ownership checks on all task operations.
+- Requests without valid JWT must return 401 Unauthorized.
+- Users must never access or mutate other users’ tasks.
 
-## Key Standards
+## API Design Rules
 
-- All features must be explicitly defined in specifications before coding.
-- Each module must have a single responsibility.
-- Business logic must be separated from CLI input/output.
-- Task identifiers must be unique and stable during runtime.
-- All user-facing messages must be clear and deterministic.
-- Invalid operations must be safely handled with informative errors.
+- RESTful endpoints only.
+- All endpoints are namespaced under `/api/`.
+- All task queries must be filtered by authenticated user ID.
+- Consistent request/response schemas using Pydantic models.
+- Explicit HTTP status codes for success and error cases.
 
-## Functional Scope (Phase I only)
+## Data & Persistence Rules
 
-- Add a task with title and optional description.
-- View all tasks with clear status indicators.
-- Update task title and/or description by ID.
-- Delete a task by ID.
-- Mark a task as complete or incomplete.
+- Use Neon Serverless PostgreSQL as the database.
+- Use SQLModel as the ORM.
+- Tasks must be persisted with:
+  - user_id (ownership)
+  - title
+  - description
+  - completion status
+  - timestamps
+- No in-memory or mock storage in Phase II.
 
-## Data Constraints
+## Frontend Rules
 
-- Tasks are stored in memory only.
-- No file system persistence.
-- No database usage.
-- Data resets on every application restart.
+- Next.js App Router (16+).
+- Responsive UI (desktop + mobile).
+- All API calls go through a centralized API client.
+- JWT token must be attached to every API request.
+- UI must reflect authenticated user state (logged in/out).
+- No direct database or backend logic in frontend.
 
-## Technical Constraints
+## Spec-Kit Rules
 
-- Language: Python 3.13+
-- Runtime: Console / CLI
-- Environment: UV + WSL 2 (Linux)
-- External services: None
-- No network or API calls.
+- Every feature must have a corresponding spec file.
+- Specs must live under `/specs` following Spec-Kit structure.
+- The agent must reference specs using `@specs/...`.
+- If behavior changes, specs must be updated before implementation.
+- Specs are the source of truth, not the code.
 
-## Project Structure Requirements
+## Out of Scope (Explicitly Forbidden)
 
-- `/src` directory for Python source code.
-- Clear separation between models, services, and CLI entry point.
-- `specs/history` directory containing all specification iterations.
-- `README.md` with setup and execution instructions.
-- `CLAUDE.md` documenting Claude Code usage and prompts.
+- No AI chatbot features in Phase II.
+- No natural language task control.
+- No background jobs, reminders, or scheduling.
+- No business logic inside frontend components.
+- No shared sessions or cookies between frontend and backend.
 
-## Out of Scope (explicitly excluded)
+## Quality Standards
 
-- Priorities, tags, or categories.
-- Search, filtering, or sorting.
-- Due dates, reminders, or recurring tasks.
-- AI, chatbot, or natural language interfaces.
-- Persistence, cloud deployment, or containers.
+- Clean, readable, modular code.
+- Predictable API behavior.
+- Clear error handling and validation.
+- Production-style folder structure.
+- Ready for extension in Phase III (chatbot integration).
+
+## Success Criteria
+
+- Multi-user todo app with authentication.
+- Persistent task storage in PostgreSQL.
+- Secure JWT-based API access.
+- Clean separation between frontend, backend, and database.
+- Fully spec-driven implementation traceable through Spec-Kit history.
 
 ## Governance
 
 This Constitution is the single source of truth for project principles, standards, and scope. It supersedes all other practices and guidance. Amendments require formal review, documentation, and a migration plan for affected artifacts. All development activities, code reviews, and specification changes must verify compliance with this constitution.
 
-**Version**: 1.0.0 | **Ratified**: 2026-01-02 | **Last Amended**: 2026-01-02
+**Version**: 2.0.0 | **Ratified**: 2026-01-06 | **Last Amended**: 2026-01-06
